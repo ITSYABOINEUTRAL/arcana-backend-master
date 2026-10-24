@@ -150,7 +150,11 @@ const sendEmail = async ({ to, subject, html, cc }) => {
     if (cc) options.cc = cc;
 
     const response = await resend.emails.send(options);
-    console.log("✅ Email sent:", response.id);
+    if (response.error) {
+      console.error("❌ Email send failed:", response.error);
+      throw new Error(response.error.message || "Failed to send email");
+    }
+    console.log("✅ Email sent:", response.data?.id);
     return response;
   } catch (error) {
     console.error("❌ Email send failed:", error);
